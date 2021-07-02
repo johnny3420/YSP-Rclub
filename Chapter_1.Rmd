@@ -1,0 +1,21 @@
+---
+title: "Chapter 1"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+```
+
+```{r, eval = F}
+install.packages(c("nycflights13", "gapminder", "Lahman"))
+```
+
+```{r}
+1 + 2
+```
+
