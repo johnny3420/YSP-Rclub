@@ -1,0 +1,90 @@
+---
+title: "Chapter 4"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+```
+
+
+# 4 Workflow: basics
+## 4.1 Coding basics
+
+```{r}
+1 / 200 * 30
+(59 + 73 + 2) / 3
+sin(pi / 2)
+```
+
+```{r}
+x <- 3 * 4
+```
+
+## 4.2 What’s in a name?
+
+```{r}
+x
+```
+
+```{r}
+this_is_a_really_long_name <- 2.5
+```
+
+```{r}
+r_rocks <- 2 ^ 3
+```
+
+## 4.3 Calling functions
+```{r}
+seq(1, 10)
+```
+
+```{r}
+x <- "hello world"
+```
+
+```{r}
+y <- seq(1, 10, length.out = 5)
+y
+```
+
+```{r}
+(y <- seq(1, 10, length.out = 5))
+```
+
+## 4.4 Exercises
+
+1. Why does this code not work?
+
+```{r}
+my_variable <- 10
+my_varıable # misspelt
+```
+
+2. Tweak each of the following R commands so that they run correctly:
+
+```{r, eval = F}
+ggplot(dota = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy))
+
+fliter(mpg, cyl = 8)
+filter(diamond, carat > 3)
+```
+
+```{r}
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy))
+```
+```{r}
+filter(mpg, cyl == 8)
+filter(diamonds, carat > 3)
+```
+
+3. Press Alt + Shift + K. What happens? How can you get to the same place using the menus?
+
+Help > Shortcuts
