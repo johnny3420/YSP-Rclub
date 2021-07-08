@@ -165,7 +165,7 @@ Canceled flights
 
 1. How could you use arrange() to sort all missing values to the start? (Hint: use is.na()).
 ```{r}
-flights %>% arrange(desc(is.na(.)))
+flights %>% arrange(!is.na(.))
 ```
 
 
@@ -178,6 +178,7 @@ flights %>% arrange(dep_delay)
 3. Sort flights to find the fastest (highest speed) flights.
 ```{r}
 flights %>% arrange(desc(distance/air_time))
+flights %>% mutate(speed = distance/air_time) %>% arrange(desc(speed))
 ```
 
 4. Which flights travelled the farthest? Which travelled the shortest?
@@ -241,6 +242,18 @@ flights %>% transmute(
 )
 ```
 
+```{r}
+flights %>% transmute(
+  air_time,
+  arr_time,
+  dep_time,
+  diff_time = arr_time - dep_time,
+  diff_mins = (diff_time %/% 100 * 60) + diff_time %% 100,
+  areSame = air_time == diff_mins
+)
+```
+
+
 
 3. Compare dep_time, sched_dep_time, and dep_delay. How would you expect those three numbers to be related?
 
@@ -249,7 +262,13 @@ dep_delay = dep_time - sched_dep_time
 4. Find the 10 most delayed flights using a ranking function. How do you want to handle ties? Carefully read the documentation for min_rank().
 
 ```{r}
-flights %>% filter(rank(dplyr::desc(arr_delay), ties.method = "first")<=10) 
+flights %>% filter(rank(dplyr::desc(arr_delay), ties.method = "min")<=10) 
+```
+
+```{r}
+flights %>% filter(rank(dplyr::desc(arr_delay), ties.method = "first")<=10)  %>%
+  arrange(desc(arr_delay))
+
 ```
 
 
@@ -260,9 +279,49 @@ flights %>% filter(rank(dplyr::desc(arr_delay), ties.method = "first")<=10)
 ```
 
 ### 5.6.7 Problem 5
-5. Which carrier has the worst delays? Challenge: can you disentangle the effects of bad airports vs. bad carriers? Why/why not? (Hint: think about flights %>% group_by(carrier, dest) %>% summarise(n()))
+5. Which carrier has the worst delays? Challenge: can you disentangle the effects of bad airports vs. bad carriers? Why/why not? (Hint: think about flights %>% group_by(carrier, dest) %>% summarise(n())
 
 ```{r}
+flights %>% group_by(carrier, dest) %>% summarise(n())
+```
 
+
+```{r}
+flights %>%
+  group_by(carrier) %>%
+  summarize(avg_delay = mean(arr_delay, na.rm = T)) %>%
+  arrange(desc(avg_delay)) %>%
+  left_join(airlines) %>%
+  select(name, everything())
+```
+
+```{r}
+flights %>%
+  group_by(carrier, dest) %>%
+  summarize(avg_delay = mean(arr_delay, na.rm = T)) %>%
+  arrange(desc(avg_delay)) %>%
+  left_join(airlines) %>%
+  select(name, everything())
+```
+
+```{r}
+flights %>%
+  group_by(carrier, origin, dest) %>%
+  summarize(avg_delay = mean(arr_delay, na.rm = T)) %>%
+  arrange(desc(avg_delay)) %>%
+  left_join(airlines) %>%
+  select(name, everything())
+```
+
+```{r}
+flights %>%
+  group_by(carrier, origin, dest) %>%
+  summarize(avg_delay = mean(arr_delay, na.rm = T)) %>%
+  arrange(desc(avg_delay)) %>%
+  left_join(airlines) %>%
+  ungroup() %>%
+  group_by(name) %>%
+  summarize(avg_delay = mean(avg_delay, na.rm = T)) %>%
+  arrange(desc(avg_delay))
 ```
 
